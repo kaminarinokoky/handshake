@@ -1,0 +1,672 @@
+<html lang="en"><head><style class="darkreader darkreader--fallback" media="screen"></style><style class="darkreader darkreader--user-agent" media="screen"></style><style class="darkreader darkreader--text" media="screen"></style><style class="darkreader darkreader--invert" media="screen"></style><style class="darkreader darkreader--inline" media="screen"></style><style class="darkreader darkreader--variables" media="screen"></style><style class="darkreader darkreader--root-vars" media="screen"></style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>handshake! — Decentralized Mesh Network</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #111119;
+            --bg-card-hover: #161622;
+            --border: #1e1e2e;
+            --text: #d0d0d8;
+            --text-muted: #8888a0;
+            --accent: #e8a850;
+            --accent-glow: #e8a85055;
+            --accent2: #5ea8c7;
+            --accent2-glow: #5ea8c740;
+            --green: #6bbf7c;
+            --red: #e0556a;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', 'Liberation Mono', monospace;
+            --font-sans: 'Inter', 'Segoe UI', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 20% 10%, rgba(232, 168, 80, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 75% 50%, rgba(94, 168, 199, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 85%, rgba(232, 168, 80, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.015;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+        header.scrolled {
+            border-bottom-color: #2a2a3a;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 64px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: #fff;
+            text-decoration: none;
+        }
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent), #c47d30);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #1a1a1a;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.25s;
+            position: relative;
+            padding: 6px 0;
+        }
+        nav a:hover {
+            color: #fff;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        .btn-nav {
+            background: var(--accent);
+            color: #1a1a1a;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+        .btn-nav:hover {
+            box-shadow: 0 0 28px var(--accent-glow), 0 0 50px var(--accent-glow);
+            transform: translateY(-1px);
+            color: #1a1a1a;
+            background: #f5b85f;
+        }
+
+        section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+        .hero {
+            text-align: center;
+            padding: 100px 24px 80px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(232, 168, 80, 0.1);
+            border: 1px solid rgba(232, 168, 80, 0.25);
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .hero h1 {
+            font-size: clamp(2.8rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, #fff 0%, #e8c880 40%, #d49440 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+        .tagline {
+            font-weight: 600;
+            color: var(--accent2);
+            font-size: 1rem;
+            letter-spacing: 0.01em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: #2e2e42;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+        }
+        .card .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #eee;
+            letter-spacing: -0.01em;
+        }
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .card.accent {
+            border-left: 3px solid var(--accent);
+        }
+        .card.accent2 {
+            border-left: 3px solid var(--accent2);
+        }
+
+        pre {
+            background: #0d0d18;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 18px 20px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #c8c8d8;
+            position: relative;
+            margin: 16px 0;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: -8px;
+            padding: 10px 16px 4px;
+            background: #0d0d18;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+        .code-header + pre {
+            margin-top: 0;
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+        }
+        .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 2px;
+        }
+        .dot.red {
+            background: #e0556a;
+        }
+        .dot.yellow {
+            background: #e8a850;
+        }
+        .dot.green {
+            background: #6bbf7c;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: #f0f0f5;
+        }
+        .section-desc {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            align-items: flex-start;
+        }
+        .step:last-child {
+            border-bottom: none;
+        }
+        .step-num {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(232, 168, 80, 0.1);
+            border: 1px solid rgba(232, 168, 80, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-family: var(--font-mono);
+        }
+        .step-content h4 {
+            font-weight: 700;
+            color: #eee;
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+        .step-content p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .status-big {
+            text-align: center;
+            padding: 60px 24px;
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius);
+            background: rgba(232, 168, 80, 0.03);
+        }
+        .status-big h3 {
+            font-size: 2.2rem;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+            margin: 16px 0 8px;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 40px 24px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .hebrew {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #1a1a1a;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 35px var(--accent-glow), 0 0 65px var(--accent-glow);
+            transform: translateY(-1px);
+            background: #f5bc65;
+        }
+        .btn-outline {
+            border: 1px solid var(--border);
+            color: #ddd;
+            background: transparent;
+        }
+        .btn-outline:hover {
+            border-color: #555;
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .nav-inner {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 12px 16px;
+                gap: 8px;
+            }
+            nav {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            .hero {
+                padding: 60px 16px 50px;
+            }
+            section {
+                padding: 50px 16px;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .step {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style><style class="darkreader darkreader--sync" media="screen"></style>
+<style class="darkreader darkreader--override" media="screen"></style></head>
+<body>
+    <!-- ─── Header ─────────────────────── -->
+    <header id="header">
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <div class="logo-icon">🤝</div>
+                handshake!
+            </a>
+            <nav>
+                <a href="#how">How It Works</a>
+                <a href="#features">Use Cases</a>
+                <a href="#start">Get Started</a>
+                <a href="#status">Status</a>
+                <a href="#contribute" class="btn-nav">Contribute</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ─── Hero ─────────────────────── -->
+    <section class="hero">
+        <span class="hero-badge">🤝 handshake! — Shalom Iran!</span>
+        <h1>handshake!</h1>
+        <p class="subtitle">
+            A fully decentralized, encrypted mesh network built to provide
+            <strong>uncensorable internet access</strong> for everyone. Ordinary
+            MikroTik routers and Linux devices become self‑organizing nodes that
+            automatically discover each other and share connectivity — even when
+            nationwide firewalls try to block it.
+        </p>
+        <p class="tagline">שלום — Peace, Wholeness, and Connectivity for All</p>
+        <div class="btn-group" style="margin-top:28px;">
+            <a href="#start" class="btn btn-primary">Get Started</a>
+            <a href="#how" class="btn btn-outline">Learn More</a>
+        </div>
+    </section>
+
+    <!-- ─── How It Works ─────────────────────── -->
+    <section id="how">
+        <span class="section-label">Architecture</span>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-desc">
+            handshake! embeds advanced mesh routing directly in its source code,
+            includes a powerful web‑based management panel, and is designed to
+            eventually run over audio, radio, DNS, and other transports that
+            deep‑packet inspection cannot recognize.
+        </p>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h4>Identity &amp; Encryption</h4>
+                <p>On first run, every node generates a fresh <strong>Ed25519 key pair</strong>. The public key is hashed into a permanent IPv6 address (e.g., <code>200:c0de:…</code>). This address is the node's cryptographic identity on the mesh. All traffic is end‑to‑end encrypted with forward‑secure session keys — <em>no one</em>, not even other mesh participants, can read packets that aren't meant for them.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h4>Self‑Organizing Mesh Routing</h4>
+                <p>The core is a decentralized spanning‑tree overlay that constantly measures link quality, builds an efficient topology, and heals automatically when peers join, leave, or fail. Routing is entirely <strong>decentralized</strong>: no servers, no central coordinators, no pre‑configured paths. The network finds the best routes on its own.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h4>Peer Discovery — Automatic</h4>
+                <p>Nodes do not require manual friend‑adding. On the same LAN, they use <strong>multicast advertisements</strong>. Globally, a <strong>Distributed Hash Table (DHT)</strong> lets nodes locate remote peers without any bootstrap server. A new node only needs one reachable peer address — shared casually via a URL, QR code, or even on paper. Once connected, the full network topology propagates via gossip. <em>No hardcoded IPs, no central bootstrap list, no developer‑owned server is ever trusted.</em></p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h4>Web‑Based Management Dashboard</h4>
+                <p>Every node includes a full React‑based management interface served locally on <code>http://localhost:8080</code> and also on the node's IPv6 address. Monitor mesh connectivity, peer lists, and routing tables. Configure firewall, VPNs, DHCP, and internet gateway sharing. Securely manage your router from anywhere in the world via the encrypted mesh — invisible to DPI filters.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <h4>Internet Gateway Sharing</h4>
+                <p>Some nodes have native internet access (e.g., a MikroTik router on Starlink). These can be configured as <strong>egress proxies</strong>, sharing connectivity with other mesh peers. handshake! includes a basic SOCKS5/HTTP proxy plus compatibility with external services like <a href="https://connect.starlink4iran.com/en/" style="color: var(--accent2); --darkreader-inline-color: var(--darkreader-text--accent2, var(--darkreader-text-000000, #fffdfa));" data-darkreader-inline-color="">Starlink4Iran</a>. Any node can share its internet, creating a resilient, crowdsourced access network. Traffic automatically finds the best available gateway.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+                <h4>DPI Spoofing &amp; Protocol Cloaking</h4>
+                <p>handshake! doesn't just encrypt — it <strong>actively spoofs deep packet inspectors</strong> by morphing traffic to look like ordinary internet usage. The mesh can mimic HTTP/2 video streams, WebSocket chats, QUIC gaming sessions, DNS‑over‑HTTPS lookups, or even ICMP echo/reply patterns. Dynamic protocol hopping and transport polymorphism make traffic fingerprints useless: every session looks different, every packet blends in. No fixed port, no static signature, no DPI block.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">7</div>
+            <div class="step-content">
+                <h4>Multi‑Transport Expansion (Coming)</h4>
+                <p>To stay online even when TCP/IP is totally blocked, handshake!'s modular transport system will soon support: <strong>Audio modem</strong> (data over voice calls), <strong>Software‑defined radio</strong> (ISM bands), <strong>DNS tunnelling</strong>, and <strong>WebRTC</strong> for NAT traversal. All these plug into the same mesh overlay, giving users multiple escape routes that a censor cannot jam simultaneously.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Use Cases Grid ─────────────────────── -->
+    <section id="features">
+        <span class="section-label">Use Cases</span>
+        <h2 class="section-title">Who Needs handshake!</h2>
+        <div class="grid">
+            <div class="card accent">
+                <div class="icon">🌍</div>
+                <h3>Everyone, Everywhere</h3>
+                <p>Ordinary users, activists, journalists, and small businesses who want internet that <strong>cannot be taken away</strong>.</p>
+            </div>
+            <div class="card accent2">
+                <div class="icon">🏘️</div>
+                <h3>Community Networks</h3>
+                <p>Neighbourhoods, villages, or city clusters can quickly build a resilient mesh using existing MikroTik hardware.</p>
+            </div>
+            <div class="card accent">
+                <div class="icon">🆘</div>
+                <h3>Emergency Connectivity</h3>
+                <p>When the internet is shut down but phone lines or local radios still work, handshake! routes traffic through those channels.</p>
+            </div>
+            <div class="card accent2">
+                <div class="icon">🔓</div>
+                <h3>ISP Independence</h3>
+                <p>With gateway sharing, <strong>no single authority</strong> controls the network's connection to the outside world.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Getting Started ─────────────────────── -->
+    <section id="start">
+        <span class="section-label">v0.1 — Early Development Build</span>
+        <h2 class="section-title">Get Started</h2>
+        
+
+
+        
+        
+
+        <div class="code-header">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            &nbsp;terminal — run a node
+        </div>
+        <pre><code>./handshake
+# Listens on :8080 for the web panel
+# Optionally, set LISTEN_PORT for a peering port</code></pre>
+
+        <div class="code-header">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            &nbsp;terminal — add a peer manually (if not using auto‑discovery)
+        </div>
+        <pre><code>curl -X POST http://localhost:8080/api/peer \
+-d '{"uri":"tls://another-node.com:54321"}'</code></pre>
+
+        <p style="margin-top: 16px; color: var(--text-muted); --darkreader-inline-color: var(--darkreader-text--text-muted, var(--darkreader-text-000000, #fffdfa));" data-darkreader-inline-color="">
+            Then open your browser to <code>http://localhost:8080</code> (locally) or
+            <code>http://[200:…]</code> (via the mesh) to access the management panel.
+        </p>
+    </section>
+
+    <!-- ─── Status / Coming Soon ─────────────────────── -->
+    <section id="status">
+        <span class="section-label">Project Status</span>
+        <h2 class="section-title">Active Development</h2>
+        <div class="status-big">
+            <div style="font-size: 3rem; margin-bottom: 12px;">🚧</div>
+            <h3>Coming Soon</h3>
+            <p style="color: var(--text-muted); max-width: 500px; margin: 16px auto; font-size: 1rem; --darkreader-inline-color: var(--darkreader-text--text-muted, var(--darkreader-text-000000, #fffdfa));" data-darkreader-inline-color="">
+                handshake! v0.1 is in active early development.<br>
+                Full‑featured release with <strong>DPI spoofing across every protocol</strong>,
+                multi‑transport support (audio, radio, DNS, WebRTC), and automatic global peer
+                discovery is on the way.
+            </p>
+            <p style="color: var(--accent); font-weight: 600; --darkreader-inline-color: var(--darkreader-text--accent, var(--darkreader-text-000000, #fffdfa));" data-darkreader-inline-color="">Stay tuned — freedom is coming.</p>
+        </div>
+    </section>
+
+    <!-- ─── Contributing ─────────────────────── -->
+    <section id="contribute" style="text-align:center;">
+        <span class="section-label">Open Source</span>
+        <h2 class="section-title">Contribute</h2>
+        <p class="section-desc" style="margin:0 auto 28px;">
+            handshake! is built from a fusion of proven open‑source code and new
+            transport layers. All contributions are welcome — especially those that
+            help us move faster toward a world where
+            <strong>no firewall can silence a voice</strong>.
+        </p>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; --darkreader-inline-color: var(--darkreader-text--text-muted, var(--darkreader-text-000000, #fffdfa));" data-darkreader-inline-color="">
+            No one should be cut off from the internet because of where they live.
+        </p>
+        <p class="hebrew">שלום</p>
+        <p style="color: var(--accent); font-weight: 600; --darkreader-inline-color: var(--darkreader-text--accent, var(--darkreader-text-000000, #fffdfa));" data-darkreader-inline-color="">Shalom — Peace, Wholeness, and Connectivity for All.</p>
+    </section>
+
+    <!-- ─── Footer ─────────────────────── -->
+    <footer>
+        <p>handshake! © 2026 • Decentralized Mesh Network • <span style="color: var(--accent); --darkreader-inline-color: var(--darkreader-text--accent, var(--darkreader-text-000000, #fffdfa));" data-darkreader-inline-color="">handshake! / shalom iran!</span></p>
+        <p style="margin-top:4px; font-size:0.75rem;">Built with peer‑to‑peer mesh • Web Management Panel • For Freedom</p>
+    </footer>
+
+    <script>
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+
+</body></html>
